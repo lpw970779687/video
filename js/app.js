@@ -206,8 +206,6 @@ function initSeriesPage() {
       <span>${formatViews(episode.views)}</span>
       <span>·</span>
       <span>${episode.uploadedAt}</span>
-      <span>·</span>
-      <span>${episode.duration}</span>
     `;
 
     // Highlight current episode in grid
@@ -255,8 +253,6 @@ function initSeriesPage() {
     <span>${formatViews(currentEpisode.views)}</span>
     <span>·</span>
     <span>${currentEpisode.uploadedAt}</span>
-    <span>·</span>
-    <span>${currentEpisode.duration}</span>
   `;
 
   // ---- Series intro (专题栏) ----
@@ -291,7 +287,6 @@ function initSeriesPage() {
             <polygon points="8,5 19,12 8,19"></polygon>
           </svg>
         </span>
-        <span class="episode-item-duration">${ep.duration}</span>
       </div>
       <div class="episode-item-info">
         <div class="episode-item-title">${ep.title}</div>

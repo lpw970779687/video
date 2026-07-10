@@ -23,9 +23,9 @@ function buildCoverUrl(category, seriesTitle) {
 
 // ===== 画质定义 =====
 const QUALITY_LIST = [
-  { id: '流畅', label: '流畅', suffix: '_360p' },
-  { id: '清晰', label: '清晰', suffix: '_720p' },
-  { id: '高清', label: '高清', suffix: '_1080p' }
+  { id: '流畅', label: '流畅', suffix: '_480P' },
+  { id: '清晰', label: '清晰', suffix: '_720P' },
+  { id: '高清', label: '高清', suffix: '_1080P' }
 ];
 
 // ===== 分类定义 =====
@@ -39,14 +39,14 @@ const CATEGORIES = [
 const seriesList = [
   {
     id: 1,
-    title: '公路求生',
+    title: '序列公路求生',
     category: 'shadiao',
     status: '连载中',        // 连载中 | 已完结
-    totalEpisodes: 2,
-    cover: buildCoverUrl('沙雕动画', '公路求生'),
-    description: '一部脑洞大开的沙雕公路求生动画！主角在荒诞的公路上遇到各种奇葩事件，笑点密集，全程高能。每天更新一集，记得追更哦～',
-    author: '沙雕动画工作室',
-    authorAvatar: 'https://picsum.photos/seed/author_gl/100/100',
+    totalEpisodes: 1,
+    cover: buildCoverUrl('沙雕动画', '序列公路求生'),
+    description: '一部脑洞大开的沙雕序列公路求生动画！主角在荒诞的公路上遇到各种奇葩事件，笑点密集，全程高能。每天更新一集，记得追更哦～',
+    author: '夏范',
+    authorAvatar: 'https://www.douyin.com/user/MS4wLjABAAAANDAGDDcLn2weri91EMcij3kt-crPsXVxXRBs9dc3CKUxwGvLLKhC_RJ8loImnEDM?from_tab_name=main&vid=7523482957958450472',
     episodes: [
       {
         id: 1,
@@ -54,24 +54,11 @@ const seriesList = [
         number: 1,
         duration: '3:20',
         views: 12845,
-        uploadedAt: '刚刚',
+        uploadedAt: '2026/7/10-21:33:00',
         qualities: {
-          '流畅': buildVideoUrl('沙雕动画', '公路求生', '1', '_360p'),
-          '清晰': buildVideoUrl('沙雕动画', '公路求生', '1', '_720p'),
-          '高清': buildVideoUrl('沙雕动画', '公路求生', '1', '_1080p')
-        }
-      },
-      {
-        id: 2,
-        title: '第二集',
-        number: 2,
-        duration: '4:15',
-        views: 9867,
-        uploadedAt: '1 天前',
-        qualities: {
-          '流畅': buildVideoUrl('沙雕动画', '公路求生', '2', '_360p'),
-          '清晰': buildVideoUrl('沙雕动画', '公路求生', '2', '_720p'),
-          '高清': buildVideoUrl('沙雕动画', '公路求生', '2', '_1080p')
+          '流畅': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_480P'),
+          '清晰': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_720P'),
+          '高清': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_1080P')
         }
       },
     ]
