@@ -319,6 +319,45 @@ input, textarea, select { font: inherit; color: inherit; }
   margin-bottom: 16px;
 }
 
+/* ---------- Quality Selector ---------- */
+.quality-selector {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.quality-label {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+
+.quality-options {
+  display: flex; gap: 6px;
+}
+
+.quality-btn {
+  padding: 4px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.quality-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.quality-btn.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .player-info {
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 20px;

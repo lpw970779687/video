@@ -140,10 +140,58 @@ function initPlayerPage() {
     return;
   }
 
-  // Set video source
+  // Variables for quality switching
+  let currentQuality = '高清';
+
+  // Quality selector
+  const qualityOptions = document.getElementById('quality-options');
+
+  function switchQuality(qualityId) {
+    if (!video.qualities || !video.qualities[qualityId]) return;
+    const videoEl = document.getElementById('player');
+    if (!videoEl) return;
+
+    // Save current playback position
+    const currentTime = videoEl.currentTime;
+    const wasPlaying = !videoEl.paused;
+
+    // Switch source
+    videoEl.querySelector('source').src = video.qualities[qualityId];
+    videoEl.load();
+
+    // Restore playback position and state
+    videoEl.addEventListener('loadedmetadata', function onLoaded() {
+      videoEl.currentTime = currentTime;
+      if (wasPlaying) videoEl.play();
+      videoEl.removeEventListener('loadedmetadata', onLoaded);
+    });
+
+    currentQuality = qualityId;
+
+    // Update UI
+    qualityOptions.querySelectorAll('.quality-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.quality === qualityId);
+    });
+  }
+
+  // Render quality options
+  if (video.qualities) {
+    qualityOptions.innerHTML = QUALITY_LIST.map(q => `
+      <button class="quality-btn ${q.id === currentQuality ? 'active' : ''}"
+              data-quality="${q.id}">${q.label}</button>
+    `).join('');
+
+    qualityOptions.querySelectorAll('.quality-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchQuality(btn.dataset.quality));
+    });
+  } else {
+    qualityOptions.innerHTML = '';
+  }
+
+  // Set initial video source
   const videoEl = document.getElementById('player');
-  if (videoEl) {
-    videoEl.querySelector('source').src = video.videoUrl;
+  if (videoEl && video.qualities) {
+    videoEl.querySelector('source').src = video.qualities['高清'];
     videoEl.load();
   }
 
