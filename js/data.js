@@ -11,9 +11,9 @@ function encodePathComponent(str) {
   return encodeURI(str);
 }
 
-function buildVideoUrl(category, seriesTitle, episodeTitle, qualitySuffix) {
-  // qualitySuffix 如 '_360', '_720', '_1080'
-  const fileName = `${seriesTitle} ${episodeTitle}${qualitySuffix}.mp4`;
+function buildVideoUrl(category, seriesTitle, episodeNumber, qualitySuffix) {
+  // qualitySuffix 如 '_360p', '_720p', '_1080p'
+  const fileName = `${seriesTitle}${episodeNumber}${qualitySuffix}.mp4`;
   return `${SERVER_BASE}/videos/${encodePathComponent(category)}/${encodePathComponent(seriesTitle)}/${encodePathComponent(fileName)}`;
 }
 
@@ -42,7 +42,7 @@ const seriesList = [
     title: '公路求生',
     category: 'shadiao',
     status: '连载中',        // 连载中 | 已完结
-    totalEpisodes: 5,
+    totalEpisodes: 2,
     cover: buildCoverUrl('沙雕动画', '公路求生'),
     description: '一部脑洞大开的沙雕公路求生动画！主角在荒诞的公路上遇到各种奇葩事件，笑点密集，全程高能。每天更新一集，记得追更哦～',
     author: '沙雕动画工作室',
