@@ -12,12 +12,14 @@ const VIDEOS = {
   shaDiao1: {
     '流畅': encodeURI('沙雕动画1_流畅.mp4'),
     '清晰': encodeURI('沙雕动画1_清晰.mp4'),
-    '高清': encodeURI('沙雕动画1.mp4')
+    '高清': encodeURI('沙雕动画1.mp4'),
+    thumb: encodeURI('沙雕动画1_封面.jpg')
   },
   shaDiao2: {
     '流畅': encodeURI('沙雕动画2_流畅.mp4'),
     '清晰': encodeURI('沙雕动画2_清晰.mp4'),
-    '高清': encodeURI('沙雕动画2.mp4')
+    '高清': encodeURI('沙雕动画2.mp4'),
+    thumb: encodeURI('沙雕动画2_封面.jpg')
   }
 };
 
@@ -43,7 +45,7 @@ const videos = [
     views: 12845,
     duration: '2:35',
     uploadedAt: '刚刚',
-    thumbnail: 'https://picsum.photos/seed/shadiao1/640/360',
+    thumbnail: `${SERVER_BASE}/videos/${VIDEOS.shaDiao1.thumb}`,
     // 各画质视频地址
     qualities: {
       '流畅': `${SERVER_BASE}/videos/${VIDEOS.shaDiao1['流畅']}`,
@@ -65,7 +67,7 @@ const videos = [
     views: 9867,
     duration: '3:12',
     uploadedAt: '刚刚',
-    thumbnail: 'https://picsum.photos/seed/shadiao2/640/360',
+    thumbnail: `${SERVER_BASE}/videos/${VIDEOS.shaDiao2.thumb}`,
     // 各画质视频地址
     qualities: {
       '流畅': `${SERVER_BASE}/videos/${VIDEOS.shaDiao2['流畅']}`,
