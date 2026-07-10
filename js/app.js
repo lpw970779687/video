@@ -1,6 +1,6 @@
 /* ============================================
-   视频网站 - 核心逻辑
-   渲染 · 搜索 · 筛选 · 页面跳转
+   视频网站 - 核心逻辑（剧集系统版）
+   渲染 · 搜索 · 筛选 · 播放
    ============================================ */
 
 /* ---------- Format helpers ---------- */
@@ -21,40 +21,43 @@ function getCategoryLabel(id) {
   return c ? c.label : id;
 }
 
-/* ---------- Render video cards ---------- */
-function renderVideoCards(videoList, container) {
+/* ---------- Render series cards (首页剧集卡片) ---------- */
+function renderSeriesCards(list, container) {
   if (!container) return;
 
-  if (!videoList || videoList.length === 0) {
+  if (!list || list.length === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <h3>没有找到匹配的视频</h3>
+        <h3>没有找到匹配的剧集</h3>
         <p>试试其他关键词或分类</p>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = videoList.map(video => `
-    <div class="video-card" onclick="goToPlayer(${video.id})">
+  container.innerHTML = list.map(series => `
+    <div class="video-card" onclick="goToPlayer(${series.id})">
       <div class="video-card-thumb">
-        <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" onerror="this.src='https://picsum.photos/seed/default/640/360'">
-        <span class="video-card-duration">${video.duration}</span>
+        <img src="${series.cover}" alt="${series.title}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${series.id}/640/360'">
+        <span class="video-card-duration">${series.totalEpisodes} 集</span>
       </div>
       <div class="video-card-body">
-        <h3 class="video-card-title">${video.title}</h3>
+        <div class="series-card-header">
+          <h3 class="video-card-title">${series.title}</h3>
+          <span class="series-status-badge ${series.status === '已完结' ? 'finished' : 'ongoing'}">${series.status}</span>
+        </div>
         <div class="video-card-meta">
-          <span>${formatViews(video.views)}</span>
+          <span>${getCategoryLabel(series.category)}</span>
           <span>·</span>
-          <span>${video.uploadedAt}</span>
+          <span>${series.episodes.length} 集</span>
         </div>
         <div class="video-card-author">
-          <img src="${video.avatar}" alt="" onerror="this.style.display='none'">
-          <span>${video.author}</span>
+          <img src="${series.authorAvatar}" alt="" onerror="this.style.display='none'">
+          <span>${series.author}</span>
         </div>
       </div>
     </div>
@@ -75,37 +78,33 @@ function renderCategories(container, activeId, onClick) {
   });
 }
 
-/* ---------- Go to player page ---------- */
-function goToPlayer(videoId) {
-  window.location.href = `player.html?id=${videoId}`;
+/* ---------- Navigate to player page ---------- */
+function goToPlayer(seriesId, episodeId) {
+  let url = `player.html?series=${seriesId}`;
+  if (episodeId) url += `&episode=${episodeId}`;
+  window.location.href = url;
 }
 
-/* ---------- Get video by ID ---------- */
-function getVideoById(id) {
-  return videos.find(v => v.id === Number(id));
+/* ---------- Get series by ID ---------- */
+function getSeriesById(id) {
+  return seriesList.find(s => s.id === Number(id));
 }
 
-/* ---------- Get related videos (same category, exclude current) ---------- */
-function getRelatedVideos(video, count = 6) {
-  return videos
-    .filter(v => v.id !== video.id && v.category === video.category)
-    .slice(0, count);
-}
-
-/* ---------- Search & filter ---------- */
-function filterVideos(videos, { category, query }) {
-  let result = [...videos];
+/* ---------- Search & filter for series ---------- */
+function filterSeries(list, { category, query }) {
+  let result = [...list];
 
   if (category && category !== 'all') {
-    result = result.filter(v => v.category === category);
+    result = result.filter(s => s.category === category);
   }
 
   if (query && query.trim()) {
     const q = query.trim().toLowerCase();
-    result = result.filter(v =>
-      v.title.toLowerCase().includes(q) ||
-      v.description.toLowerCase().includes(q) ||
-      v.author.toLowerCase().includes(q)
+    result = result.filter(s =>
+      s.title.toLowerCase().includes(q) ||
+      s.description.toLowerCase().includes(q) ||
+      s.author.toLowerCase().includes(q) ||
+      s.episodes.some(ep => ep.title.toLowerCase().includes(q))
     );
   }
 
@@ -122,44 +121,50 @@ function debounce(fn, delay = 300) {
 }
 
 /* ============================================
-   Player Page Initialization
+   Series Page Initialization (播放页)
    ============================================ */
-function initPlayerPage() {
+function initSeriesPage() {
   const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
-  const video = getVideoById(id);
+  const seriesId = params.get('series');
+  const episodeId = params.get('episode');
+  const series = getSeriesById(seriesId);
 
-  if (!video) {
+  if (!series) {
     document.querySelector('.player-container')?.remove();
     document.querySelector('.main-content').innerHTML = `
       <div class="empty-state">
-        <h3>视频不存在</h3>
+        <h3>剧集不存在</h3>
         <p>返回 <a href="index.html" style="color:var(--accent)">首页</a></p>
       </div>
     `;
     return;
   }
 
-  // Variables for quality switching
+  // Determine which episode to start with
+  let currentEpisode;
+  if (episodeId) {
+    currentEpisode = series.episodes.find(ep => ep.id === Number(episodeId));
+  }
+  if (!currentEpisode) {
+    currentEpisode = series.episodes[0];
+  }
+
   let currentQuality = '高清';
 
-  // Quality selector
+  // ---- Quality switching ----
   const qualityOptions = document.getElementById('quality-options');
+  const videoEl = document.getElementById('player');
 
   function switchQuality(qualityId) {
-    if (!video.qualities || !video.qualities[qualityId]) return;
-    const videoEl = document.getElementById('player');
+    if (!currentEpisode || !currentEpisode.qualities || !currentEpisode.qualities[qualityId]) return;
     if (!videoEl) return;
 
-    // Save current playback position
     const currentTime = videoEl.currentTime;
     const wasPlaying = !videoEl.paused;
 
-    // Switch source
-    videoEl.querySelector('source').src = video.qualities[qualityId];
+    videoEl.querySelector('source').src = currentEpisode.qualities[qualityId];
     videoEl.load();
 
-    // Restore playback position and state
     videoEl.addEventListener('loadedmetadata', function onLoaded() {
       videoEl.currentTime = currentTime;
       if (wasPlaying) videoEl.play();
@@ -168,14 +173,62 @@ function initPlayerPage() {
 
     currentQuality = qualityId;
 
-    // Update UI
     qualityOptions.querySelectorAll('.quality-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.quality === qualityId);
     });
   }
 
-  // Render quality options
-  if (video.qualities) {
+  // ---- Episode switching ----
+  function switchEpisode(episode) {
+    if (!episode || !episode.qualities) return;
+    currentEpisode = episode;
+
+    // Update video source
+    const quality = episode.qualities[currentQuality] || episode.qualities['高清'];
+    if (videoEl && quality) {
+      const currentTime = videoEl.currentTime;
+      const wasPlaying = !videoEl.paused;
+
+      videoEl.querySelector('source').src = quality;
+      videoEl.load();
+
+      videoEl.addEventListener('loadedmetadata', function onLoaded() {
+        videoEl.currentTime = currentTime;
+        if (wasPlaying) videoEl.play();
+        videoEl.removeEventListener('loadedmetadata', onLoaded);
+      });
+    }
+
+    // Update title & stats
+    document.title = `${series.title} ${episode.title} - VideoHub`;
+    document.getElementById('player-title').textContent = `${series.title} ${episode.title}`;
+    document.getElementById('player-stats').innerHTML = `
+      <span>${formatViews(episode.views)}</span>
+      <span>·</span>
+      <span>${episode.uploadedAt}</span>
+      <span>·</span>
+      <span>${episode.duration}</span>
+    `;
+
+    // Highlight current episode in grid
+    document.querySelectorAll('.episode-item').forEach(item => {
+      item.classList.toggle('active', Number(item.dataset.episodeId) === episode.id);
+    });
+
+    // Update URL without reloading
+    const url = new URL(window.location);
+    url.searchParams.set('episode', episode.id);
+    window.history.replaceState({}, '', url);
+
+    // Update quality buttons (episode may have different quality sources)
+    qualityOptions.querySelectorAll('.quality-btn').forEach(btn => {
+      const qId = btn.dataset.quality;
+      btn.classList.toggle('active', qId === currentQuality);
+    });
+  }
+
+  // ---- Render quality options ----
+  if (currentEpisode && currentEpisode.qualities) {
     qualityOptions.innerHTML = QUALITY_LIST.map(q => `
       <button class="quality-btn ${q.id === currentQuality ? 'active' : ''}"
               data-quality="${q.id}">${q.label}</button>
@@ -188,61 +241,74 @@ function initPlayerPage() {
     qualityOptions.innerHTML = '';
   }
 
-  // Set initial video source
-  const videoEl = document.getElementById('player');
-  if (videoEl && video.qualities) {
-    videoEl.querySelector('source').src = video.qualities['高清'];
+  // ---- Set initial video source ----
+  if (videoEl && currentEpisode && currentEpisode.qualities) {
+    const initialQuality = currentEpisode.qualities['高清'] || Object.values(currentEpisode.qualities)[0];
+    videoEl.querySelector('source').src = initialQuality;
     videoEl.load();
   }
 
-  // Title
-  document.getElementById('player-title').textContent = video.title;
-
-  // Stats
+  // ---- Episode title & stats ----
+  document.title = `${series.title} ${currentEpisode.title} - VideoHub`;
+  document.getElementById('player-title').textContent = `${series.title} ${currentEpisode.title}`;
   document.getElementById('player-stats').innerHTML = `
-    <span>${formatViews(video.views)}</span>
+    <span>${formatViews(currentEpisode.views)}</span>
     <span>·</span>
-    <span>${video.uploadedAt}</span>
-    <span class="player-category">${getCategoryLabel(video.category)}</span>
+    <span>${currentEpisode.uploadedAt}</span>
+    <span>·</span>
+    <span>${currentEpisode.duration}</span>
   `;
 
-  // Author info
-  document.getElementById('player-author-avatar').src = video.avatar;
-  document.getElementById('player-author-name').textContent = video.author;
-  document.getElementById('player-author-desc').textContent = video.description;
+  // ---- Series intro (专题栏) ----
+  document.getElementById('series-cover').src = series.cover;
+  document.getElementById('series-cover').onerror = function() {
+    this.style.display = 'none';
+  };
+  document.getElementById('series-title').textContent = series.title;
+  const badge = document.getElementById('series-badge');
+  badge.textContent = series.status;
+  badge.className = `series-intro-badge ${series.status === '已完结' ? 'finished' : 'ongoing'}`;
+  document.getElementById('series-meta').innerHTML = `
+    <span>${series.totalEpisodes} 集</span>
+    <span>·</span>
+    <span>${getCategoryLabel(series.category)}</span>
+  `;
+  document.getElementById('series-desc').textContent = series.description;
+  const authorAvatar = document.getElementById('series-author-avatar');
+  authorAvatar.src = series.authorAvatar;
+  authorAvatar.onerror = function() { this.style.display = 'none'; };
+  document.getElementById('series-author-name').textContent = series.author;
 
-  // Comments
-  const commentsEl = document.getElementById('comments-list');
-  commentsEl.innerHTML = video.comments.map(c => `
-    <div class="comment-item">
-      <img src="${c.avatar}" alt="" onerror="this.style.display='none'">
-      <div>
-        <div class="comment-author">${c.author} <span>${c.time}</span></div>
-        <div class="comment-content">${c.content}</div>
+  // ---- Episode grid (选集) ----
+  const episodeGrid = document.getElementById('episode-grid');
+  episodeGrid.innerHTML = series.episodes.map(ep => `
+    <div class="episode-item ${ep.id === currentEpisode.id ? 'active' : ''}"
+         data-episode-id="${ep.id}"
+         onclick="initSeriesPage.switchEpisode(${ep.id})">
+      <div class="episode-item-thumb">
+        <span class="episode-item-play">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="8,5 19,12 8,19"></polygon>
+          </svg>
+        </span>
+        <span class="episode-item-duration">${ep.duration}</span>
+      </div>
+      <div class="episode-item-info">
+        <div class="episode-item-title">${ep.title}</div>
+        <div class="episode-item-meta">${formatViews(ep.views)}</div>
       </div>
     </div>
   `).join('');
-  document.getElementById('comments-count').textContent = video.comments.length;
 
-  // Sidebar - related videos
-  const related = getRelatedVideos(video);
-  const sidebarEl = document.getElementById('related-list');
-  sidebarEl.innerHTML = related.map(v => `
-    <div class="sidebar-video" onclick="goToPlayer(${v.id})">
-      <div class="sidebar-video-thumb">
-        <img src="${v.thumbnail}" alt="${v.title}" loading="lazy">
-        <span class="sidebar-video-duration">${v.duration}</span>
-      </div>
-      <div class="sidebar-video-info">
-        <div class="sidebar-video-title">${v.title}</div>
-        <div class="sidebar-video-meta">${v.author} · ${formatViews(v.views)}</div>
-      </div>
-    </div>
-  `).join('');
+  // Expose switchEpisode globally so onclick works
+  initSeriesPage.switchEpisode = function(episodeId) {
+    const ep = series.episodes.find(e => e.id === Number(episodeId));
+    if (ep) switchEpisode(ep);
+  };
 }
 
 /* ============================================
-   Index Page Initialization
+   Index Page Initialization (首页)
    ============================================ */
 function initIndexPage(initialQuery = '') {
   const videoGrid = document.getElementById('video-grid');
@@ -254,11 +320,11 @@ function initIndexPage(initialQuery = '') {
   let searchQuery = initialQuery;
 
   function render() {
-    const filtered = filterVideos(videos, {
+    const filtered = filterSeries(seriesList, {
       category: activeCategory,
       query: searchQuery
     });
-    renderVideoCards(filtered, videoGrid);
+    renderSeriesCards(filtered, videoGrid);
     renderCategories(categoriesEl, activeCategory, (catId) => {
       activeCategory = catId;
       render();
@@ -336,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const searchQuery = initGlobalSearch();
 
   if (path.endsWith('player.html') || path.includes('player')) {
-    initPlayerPage();
+    initSeriesPage();
   } else {
     initIndexPage(searchQuery);
   }
