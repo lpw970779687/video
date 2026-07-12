@@ -17,8 +17,8 @@ function buildVideoUrl(category, seriesTitle, episodeNumber, qualitySuffix) {
   return `${SERVER_BASE}/videos/${encodePathComponent(category)}/${encodePathComponent(seriesTitle)}/${encodePathComponent(fileName)}`;
 }
 
-function buildCoverUrl(category, seriesTitle) {
-  return `${SERVER_BASE}/videos/${encodePathComponent(category)}/${encodePathComponent(seriesTitle)}/${encodePathComponent(seriesTitle + '_封面.jpg')}`;
+function buildCoverUrl(category, seriesTitle, ext = 'jpg') {
+  return `${SERVER_BASE}/videos/${encodePathComponent(category)}/${encodePathComponent(seriesTitle)}/${encodePathComponent(seriesTitle + '_封面.' + ext)}`;
 }
 
 // ===== 画质定义 =====
@@ -50,7 +50,7 @@ const seriesList = [
     episodes: [
       {
         id: 1,
-        title: '第一集',
+        title: '第1集',
         number: 1,
         duration: '3:20',
         views: 12845,
@@ -61,6 +61,28 @@ const seriesList = [
           '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_1080P')
         }
       },
+    ]
+  },
+  {
+    id: 2,
+    title: '第一序列',
+    category: 'shadiao',
+    status: '连载中',
+    totalEpisodes: 9,
+    cover: buildCoverUrl('沙雕动画', '第一序列', 'jpeg'),
+    description: '沙雕动画第一序列，搞笑剧情持续更新中～',
+    author: '夏范',
+    authorAvatar: 'https://www.douyin.com/user/MS4wLjABAAAANDAGDDcLn2weri91EMcij3kt-crPsXVxXRBs9dc3CKUxwGvLLKhC_RJ8loImnEDM?from_tab_name=main&vid=7523482957958450472',
+    episodes: [
+      { id: 1, title: '第1集', number: 1, duration: '3:00', views: 9800, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '1', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '1', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '1', '_1080P') } },
+      { id: 2, title: '第2集', number: 2, duration: '3:00', views: 8700, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '2', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '2', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '2', '_1080P') } },
+      { id: 3, title: '第3集', number: 3, duration: '3:00', views: 7600, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '3', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '3', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '3', '_1080P') } },
+      { id: 4, title: '第4集', number: 4, duration: '3:00', views: 6500, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '4', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '4', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '4', '_1080P') } },
+      { id: 5, title: '第5集', number: 5, duration: '3:00', views: 5400, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '5', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '5', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '5', '_1080P') } },
+      { id: 6, title: '第6集', number: 6, duration: '3:00', views: 4300, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '6', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '6', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '6', '_1080P') } },
+      { id: 7, title: '第7集', number: 7, duration: '3:00', views: 3200, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '7', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '7', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '7', '_1080P') } },
+      { id: 8, title: '第8集', number: 8, duration: '3:00', views: 2100, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '8', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '8', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '8', '_1080P') } },
+      { id: 9, title: '第9集', number: 9, duration: '3:00', views: 1000, uploadedAt: '2026/7/12-15:45:00', qualities: { '480P': buildVideoUrl('沙雕动画', '第一序列', '9', '_480P'), '720P': buildVideoUrl('沙雕动画', '第一序列', '9', '_720P'), '1080P': buildVideoUrl('沙雕动画', '第一序列', '9', '_1080P') } }
     ]
   }
 ];
