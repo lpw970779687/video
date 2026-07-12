@@ -548,8 +548,8 @@ input, textarea, select { font: inherit; color: inherit; }
 }
 
 .series-intro-cover {
-  width: 180px;
-  aspect-ratio: 16 / 9;
+  width: 140px;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 4px;
   flex-shrink: 0;
