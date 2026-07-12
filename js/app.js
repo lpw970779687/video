@@ -21,6 +21,13 @@ function getCategoryLabel(id) {
   return c ? c.label : id;
 }
 
+function getSubCategoryLabel(catId, subId) {
+  const cat = CATEGORIES.find(c => c.id === catId);
+  if (!cat?.subCategories) return '';
+  const sub = cat.subCategories.find(s => s.id === subId);
+  return sub ? sub.label : '';
+}
+
 /* ---------- Render series cards (首页剧集卡片) ---------- */
 function renderSeriesCards(list, container) {
   if (!container) return;
@@ -43,20 +50,19 @@ function renderSeriesCards(list, container) {
     <div class="video-card" onclick="goToPlayer(${series.id})">
       <div class="video-card-thumb">
         <img src="${series.cover}" alt="${series.title}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${series.id}/640/360'">
+        <span class="series-status-corner ${series.status === '已完结' ? 'finished' : 'ongoing'}">${series.status}</span>
         <span class="video-card-duration">${series.totalEpisodes} 集</span>
+        <div class="video-card-play">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+            <polygon points="8,5 19,12 8,19"></polygon>
+          </svg>
+        </div>
       </div>
       <div class="video-card-body">
-        <div class="series-card-header">
-          <h3 class="video-card-title">${series.title}</h3>
-          <span class="series-status-badge ${series.status === '已完结' ? 'finished' : 'ongoing'}">${series.status}</span>
-        </div>
+        <h3 class="video-card-title">${series.title}</h3>
         <div class="video-card-meta">
-          <span>${getCategoryLabel(series.category)}</span>
+          <span>${getSubCategoryLabel(series.category, series.subCategory) || getCategoryLabel(series.category)}</span>
           <span>·</span>
-          <span>${series.episodes.length} 集</span>
-        </div>
-        <div class="video-card-author">
-          <img src="${series.authorAvatar}" alt="" onerror="this.style.display='none'">
           <span>${series.author}</span>
         </div>
       </div>
@@ -69,11 +75,11 @@ function renderCategories(container, activeId, onClick) {
   if (!container) return;
 
   container.innerHTML = CATEGORIES.map(c => `
-    <button class="category-tab ${c.id === activeId ? 'active' : ''}"
+    <button class="filter-tab ${c.id === activeId ? 'active' : ''}"
             data-category="${c.id}">${c.label}</button>
   `).join('');
 
-  container.querySelectorAll('.category-tab').forEach(btn => {
+  container.querySelectorAll('.filter-tab').forEach(btn => {
     btn.addEventListener('click', () => onClick(btn.dataset.category));
   });
 }
@@ -90,12 +96,40 @@ function getSeriesById(id) {
   return seriesList.find(s => s.id === Number(id));
 }
 
+/* ---------- Get sub-categories for a category ---------- */
+function getSubCategories(catId) {
+  const cat = CATEGORIES.find(c => c.id === catId);
+  return cat?.subCategories || [];
+}
+
+/* ---------- Render sub-categories ---------- */
+function renderSubCategories(container, subList, activeId, onClick) {
+  if (!container) return;
+  if (!subList || subList.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = subList.map(s => `
+    <button class="filter-tab ${s.id === activeId ? 'active' : ''}"
+            data-subcategory="${s.id}">${s.label}</button>
+  `).join('');
+
+  container.querySelectorAll('.filter-tab').forEach(btn => {
+    btn.addEventListener('click', () => onClick(btn.dataset.subcategory));
+  });
+}
+
 /* ---------- Search & filter for series ---------- */
-function filterSeries(list, { category, query }) {
+function filterSeries(list, { category, subCategory, query }) {
   let result = [...list];
 
   if (category && category !== 'all') {
     result = result.filter(s => s.category === category);
+  }
+
+  if (subCategory) {
+    result = result.filter(s => s.subCategory === subCategory);
   }
 
   if (query && query.trim()) {
@@ -298,22 +332,59 @@ function initSeriesPage() {
 function initIndexPage(initialQuery = '') {
   const videoGrid = document.getElementById('video-grid');
   const categoriesEl = document.getElementById('categories');
+  const subCategoriesEl = document.getElementById('sub-categories');
+  const subFilterBar = document.getElementById('sub-filter-bar');
   const searchInput = document.getElementById('search-input');
   const searchBtn = document.getElementById('search-btn');
 
   let activeCategory = 'all';
+  let activeSubCategory = '';
   let searchQuery = initialQuery;
+
+  function updateBreadcrumb(catId, subCatId) {
+    const breadcrumbEl = document.getElementById('breadcrumb-current');
+    if (breadcrumbEl) {
+      let label = getCategoryLabel(catId);
+      if (subCatId) {
+        const subList = getSubCategories(catId);
+        const sub = subList.find(s => s.id === subCatId);
+        if (sub) label += ' > ' + sub.label;
+      }
+      breadcrumbEl.textContent = label;
+    }
+  }
 
   function render() {
     const filtered = filterSeries(seriesList, {
       category: activeCategory,
+      subCategory: activeSubCategory,
       query: searchQuery
     });
     renderSeriesCards(filtered, videoGrid);
+
+    // Render main categories
     renderCategories(categoriesEl, activeCategory, (catId) => {
       activeCategory = catId;
+      activeSubCategory = '';
+      updateBreadcrumb(activeCategory, activeSubCategory);
       render();
     });
+
+    // Render sub-categories
+    const subList = getSubCategories(activeCategory);
+    if (subList.length > 0) {
+      subFilterBar.style.display = 'flex';
+      renderSubCategories(subCategoriesEl, subList, activeSubCategory, (subId) => {
+        activeSubCategory = activeSubCategory === subId ? '' : subId;
+        updateBreadcrumb(activeCategory, activeSubCategory);
+        render();
+      });
+    } else {
+      subFilterBar.style.display = 'none';
+      subCategoriesEl.innerHTML = '';
+    }
+
+    updateBreadcrumb(activeCategory, activeSubCategory);
   }
 
   // Search handler

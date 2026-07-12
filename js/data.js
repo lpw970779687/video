@@ -31,7 +31,11 @@ const QUALITY_LIST = [
 // ===== 分类定义 =====
 const CATEGORIES = [
   { id: 'all', label: '全部' },
-  { id: 'shadiao', label: '沙雕动画' },
+  { id: 'shadiao', label: '沙雕动画', subCategories: [
+    { id: 'xiuxian', label: '修仙类' },
+    { id: 'guiyi', label: '诡异类' },
+    { id: 'dushi', label: '都市类' }
+  ]},
   { id: 'guochan', label: '国产动漫' }
 ];
 
@@ -41,6 +45,7 @@ const seriesList = [
     id: 1,
     title: '序列公路求生',
     category: 'shadiao',
+    subCategory: 'xiuxian',
     status: '连载中',        // 连载中 | 已完结
     totalEpisodes: 1,
     cover: buildCoverUrl('沙雕动画', '序列公路求生'),
@@ -67,6 +72,7 @@ const seriesList = [
     id: 2,
     title: '第一序列',
     category: 'shadiao',
+    subCategory: 'dushi',
     status: '连载中',
     totalEpisodes: 9,
     cover: buildCoverUrl('沙雕动画', '第一序列', 'jpeg'),
