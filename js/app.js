@@ -149,7 +149,7 @@ function initSeriesPage() {
     currentEpisode = series.episodes[0];
   }
 
-  let currentQuality = '高清';
+  let currentQuality = '1080P';
 
   // ---- Quality switching ----
   const qualityOptions = document.getElementById('quality-options');
@@ -184,7 +184,7 @@ function initSeriesPage() {
     currentEpisode = episode;
 
     // Update video source
-    const quality = episode.qualities[currentQuality] || episode.qualities['高清'];
+    const quality = episode.qualities[currentQuality] || episode.qualities['1080P'];
     if (videoEl && quality) {
       const currentTime = videoEl.currentTime;
       const wasPlaying = !videoEl.paused;
@@ -241,7 +241,7 @@ function initSeriesPage() {
 
   // ---- Set initial video source ----
   if (videoEl && currentEpisode && currentEpisode.qualities) {
-    const initialQuality = currentEpisode.qualities['高清'] || Object.values(currentEpisode.qualities)[0];
+    const initialQuality = currentEpisode.qualities['1080P'] || Object.values(currentEpisode.qualities)[0];
     videoEl.querySelector('source').src = initialQuality;
     videoEl.load();
   }
@@ -281,17 +281,7 @@ function initSeriesPage() {
     <div class="episode-item ${ep.id === currentEpisode.id ? 'active' : ''}"
          data-episode-id="${ep.id}"
          onclick="initSeriesPage.switchEpisode(${ep.id})">
-      <div class="episode-item-thumb">
-        <span class="episode-item-play">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <polygon points="8,5 19,12 8,19"></polygon>
-          </svg>
-        </span>
-      </div>
-      <div class="episode-item-info">
-        <div class="episode-item-title">${ep.title}</div>
-        <div class="episode-item-meta">${formatViews(ep.views)}</div>
-      </div>
+      <span class="episode-item-title">${ep.title}</span>
     </div>
   `).join('');
 

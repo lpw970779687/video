@@ -23,9 +23,9 @@ function buildCoverUrl(category, seriesTitle) {
 
 // ===== 画质定义 =====
 const QUALITY_LIST = [
-  { id: '流畅', label: '流畅', suffix: '_480P' },
-  { id: '清晰', label: '清晰', suffix: '_720P' },
-  { id: '高清', label: '高清', suffix: '_1080P' }
+  { id: '480P', label: '480P', suffix: '_480P' },
+  { id: '720P', label: '720P', suffix: '_720P' },
+  { id: '1080P', label: '1080P', suffix: '_1080P' }
 ];
 
 // ===== 分类定义 =====
@@ -56,9 +56,9 @@ const seriesList = [
         views: 12845,
         uploadedAt: '2026/7/10-21:33:00',
         qualities: {
-          '流畅': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_480P'),
-          '清晰': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_720P'),
-          '高清': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_1080P')
+          '480P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_480P'),
+          '720P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_720P'),
+          '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_1080P')
         }
       },
     ]
