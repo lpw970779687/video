@@ -48,7 +48,7 @@ const seriesList = [
     subCategory: 'xiuxian',
     status: '连载中',        // 连载中 | 已完结
     totalEpisodes: 9,
-    cover: buildCoverUrl('沙雕动画', '序列公路求生'),
+    cover: buildCoverUrl('沙雕动画', '序列公路求生', 'png'),
     description: '一部脑洞大开的沙雕序列公路求生动画！主角在荒诞的公路上遇到各种奇葩事件，笑点密集，全程高能。每天更新一集，记得追更哦～',
     author: '夏范',
     authorAvatar: 'https://www.douyin.com/user/MS4wLjABAAAANDAGDDcLn2weri91EMcij3kt-crPsXVxXRBs9dc3CKUxwGvLLKhC_RJ8loImnEDM?from_tab_name=main&vid=7523482957958450472',
