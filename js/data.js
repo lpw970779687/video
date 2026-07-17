@@ -47,25 +47,21 @@ const seriesList = [
     category: 'shadiao',
     subCategory: 'xiuxian',
     status: '连载中',        // 连载中 | 已完结
-    totalEpisodes: 1,
+    totalEpisodes: 9,
     cover: buildCoverUrl('沙雕动画', '序列公路求生'),
     description: '一部脑洞大开的沙雕序列公路求生动画！主角在荒诞的公路上遇到各种奇葩事件，笑点密集，全程高能。每天更新一集，记得追更哦～',
     author: '夏范',
     authorAvatar: 'https://www.douyin.com/user/MS4wLjABAAAANDAGDDcLn2weri91EMcij3kt-crPsXVxXRBs9dc3CKUxwGvLLKhC_RJ8loImnEDM?from_tab_name=main&vid=7523482957958450472',
     episodes: [
-      {
-        id: 1,
-        title: '第1集',
-        number: 1,
-        duration: '3:20',
-        views: 12845,
-        uploadedAt: '2026/7/10-21:33:00',
-        qualities: {
-          '480P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_480P'),
-          '720P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_720P'),
-          '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_1080P')
-        }
-      },
+      { id: 1, title: '第1集', number: 1, duration: '3:20', views: 12845, uploadedAt: '2026/7/10-21:33:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '1', '_1080P') } },
+      { id: 2, title: '第2集', number: 2, duration: '3:20', views: 11000, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '2', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '2', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '2', '_1080P') } },
+      { id: 3, title: '第3集', number: 3, duration: '3:20', views: 9800, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '3', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '3', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '3', '_1080P') } },
+      { id: 4, title: '第4集', number: 4, duration: '3:20', views: 8700, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '4', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '4', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '4', '_1080P') } },
+      { id: 5, title: '第5集', number: 5, duration: '3:20', views: 7600, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '5', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '5', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '5', '_1080P') } },
+      { id: 6, title: '第6集', number: 6, duration: '3:20', views: 6500, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '6', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '6', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '6', '_1080P') } },
+      { id: 7, title: '第7集', number: 7, duration: '3:20', views: 5400, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '7', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '7', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '7', '_1080P') } },
+      { id: 8, title: '第8集', number: 8, duration: '3:20', views: 4300, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '8', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '8', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '8', '_1080P') } },
+      { id: 9, title: '第9集', number: 9, duration: '3:20', views: 3200, uploadedAt: '2026/7/12-22:00:00', qualities: { '480P': buildVideoUrl('沙雕动画', '序列公路求生', '9', '_480P'), '720P': buildVideoUrl('沙雕动画', '序列公路求生', '9', '_720P'), '1080P': buildVideoUrl('沙雕动画', '序列公路求生', '9', '_1080P') } },
     ]
   },
   {
